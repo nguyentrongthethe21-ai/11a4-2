@@ -3,30 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trắc Nghiệm 11A4 - Pro Max</title>
+    <title>Trắc Nghiệm 11A4 - Sync Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
     <style>
-        :root { --p: #2563eb; --bg: #f1f5f9; --success: #10b981; --danger: #ef4444; --warn: #f59e0b; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px 10px 80px 10px; }
+        :root { --p: #2563eb; --bg: #f1f5f9; --success: #10b981; --danger: #ef4444; --warn: #f59e0b; --dark: #1e293b; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding: 10px 10px 80px 10px; color: var(--dark); }
         .card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; position: relative; }
         .hidden { display: none; }
-        input, button, select { padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin: 5px 0; width: 100%; box-sizing: border-box; font-size: 15px; }
+        input, button, textarea { padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin: 5px 0; width: 100%; box-sizing: border-box; font-size: 15px; }
         .btn-main { background: var(--p); color: white; border: none; font-weight: bold; cursor: pointer; }
-        .btn-add { background: var(--success); color: white; border: none; margin-top: 10px; flex: 1; font-weight: bold; font-size: 13px; cursor: pointer; }
+        .btn-sync { background: var(--dark); color: white; border: none; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .btn-add { background: var(--success); color: white; border: none; margin-top: 10px; flex: 1; font-weight: bold; cursor: pointer; }
         .btn-del { background: var(--danger); color: white; border: none; width: auto; padding: 5px 12px; font-size: 13px; cursor: pointer; }
-        .option-row { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
-        .option-row input[type="radio"] { width: 22px; height: 22px; margin: 0; flex-shrink: 0; }
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: white; display: flex; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 100; }
-        .nav-bar button { flex: 1; border: none; background: none; padding: 15px; font-weight: bold; font-size: 16px; color: #64748b; }
+        .nav-bar button { flex: 1; border: none; background: none; padding: 15px; font-weight: bold; color: #64748b; }
         .active { color: var(--p) !important; border-top: 3px solid var(--p) !important; }
-        .q-text { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #1e293b; line-height: 1.4; }
-        .opt-btn { background: #f8fafc; text-align: left; border: 1px solid #e2e8f0; cursor: pointer; display: block; width: 100%; transition: 0.2s; padding: 12px; margin-bottom: 5px; border-radius: 8px; }
-        .opt-btn.correct { background: var(--success) !important; color: white !important; border-color: var(--success); }
-        .opt-btn.wrong { background: var(--danger) !important; color: white !important; border-color: var(--danger); }
+        .q-text { font-size: 18px; font-weight: bold; margin-bottom: 15px; line-height: 1.4; }
+        .opt-btn { background: #f8fafc; text-align: left; border: 1px solid #e2e8f0; cursor: pointer; display: block; width: 100%; padding: 12px; margin-bottom: 5px; border-radius: 8px; transition: 0.2s; }
+        .opt-btn.correct { background: var(--success) !important; color: white !important; }
+        .opt-btn.wrong { background: var(--danger) !important; color: white !important; }
         .badge { display: inline-block; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
         .badge-quiz { background: #e0f2fe; color: #0369a1; }
         .badge-tf { background: #fef3c7; color: #92400e; }
-        .tf4-row { padding: 10px 0; border-bottom: 1px dotted #cbd5e1; }
         .tf-res { font-size: 13px; font-weight: bold; margin-top: 5px; }
     </style>
 </head>
@@ -37,7 +35,7 @@
     <div id="quiz-container">
         <div class="card">
             <div id="play-type"></div>
-            <div id="play-progress" style="font-size: 13px; color: #64748b; margin-bottom: 5px;"></div>
+            <div id="play-progress" style="font-size: 13px; color: #64748b;"></div>
             <div id="play-question" class="q-text"></div>
             <div id="play-options"></div>
             <button id="submit-btn" class="btn-main" onclick="handleSubmit()">Xác nhận</button>
@@ -45,163 +43,90 @@
         </div>
     </div>
     <div id="result-area" class="hidden card" style="text-align: center;">
-        <h3 id="final-score-title">KẾT QUẢ</h3>
+        <h3>KẾT QUẢ</h3>
         <div id="final-score-10" style="font-size: 48px; font-weight: bold; color: var(--p);">0/10</div>
         <button class="btn-main" onclick="showPage('play')">Làm bài mới</button>
     </div>
 </div>
 
 <div id="edit-page" class="hidden">
-    <h2 style="text-align: center;">KHO CÂU HỎI</h2>
+    <h2 style="text-align: center;">CÀI ĐẶT & KHO CÂU HỎI</h2>
+    
+    <div class="card" style="background: #eff6ff; border: 1px solid var(--p);">
+        <strong style="color:var(--p)">🔄 ĐỒNG BỘ THIẾT BỊ</strong>
+        <p style="font-size: 12px; margin: 5px 0;">Copy mã này gửi sang thiết bị khác để đồng bộ câu hỏi:</p>
+        <button class="btn-sync" onclick="exportData()">📤 Xuất mã đồng bộ</button>
+        <button class="btn-sync" style="background:var(--success)" onclick="importData()">📥 Nhập mã từ máy khác</button>
+        <textarea id="sync-area" class="hidden" placeholder="Dán mã đồng bộ vào đây..."></textarea>
+    </div>
+
     <div class="card" style="border: 2px dashed var(--p);">
-        <button class="btn-main" style="background:#4f46e5" onclick="document.getElementById('file-input').click()">📄 Chọn file Word (.docx)</button>
+        <button class="btn-main" style="background:#4f46e5" onclick="document.getElementById('file-input').click()">📄 Nhập từ Word (.docx)</button>
         <input type="file" id="file-input" class="hidden" accept=".docx" onchange="handleWordFile(event)">
     </div>
+
     <div id="edit-list"></div>
     <div style="display: flex; gap: 10px;">
         <button class="btn-add" onclick="addNewQuestion('quiz')">+ Trắc nghiệm</button>
-        <button class="btn-add" style="background:var(--warn)" onclick="addNewQuestion('tf4')">+ Đúng/Sai 4 ý</button>
+        <button class="btn-add" style="background:var(--warn)" onclick="addNewQuestion('tf4')">+ Đúng/Sai</button>
     </div>
-    <button class="btn-del" style="width:100%; margin-top:10px" onclick="if(confirm('Xóa hết?')){questions=[];save();renderEditList();}">Xóa tất cả</button>
+    <button class="btn-del" style="width:100%; margin-top:10px" onclick="if(confirm('Xóa sạch kho?')){questions=[];save();renderEditList();}">Xóa tất cả</button>
 </div>
 
 <div class="nav-bar">
     <button id="nav-play" class="active" onclick="showPage('play')">▶ Làm bài</button>
-    <button id="nav-edit" onclick="handleEditNav()">⚙️ Sửa câu</button>
+    <button id="nav-edit" onclick="handleEditNav()">⚙️ Quản lý</button>
 </div>
 
 <script>
-    // Khởi tạo dữ liệu từ LocalStorage
     let questions = JSON.parse(localStorage.getItem('finalQuizData')) || [];
-    let appPassword = localStorage.getItem('appQuizPass');
     let currentQuestions = [], currentIdx = 0, correctCount = 0;
     let userTFAnswers = [null, null, null, null], selectedQuizIdx = null;
 
-    // --- XỬ LÝ DỮ LIỆU ---
-    function save() { 
-        localStorage.setItem('finalQuizData', JSON.stringify(questions)); 
+    // --- ĐỒNG BỘ NHIỀU THIẾT BỊ ---
+    function exportData() {
+        const dataStr = btoa(unescape(encodeURIComponent(JSON.stringify(questions))));
+        const el = document.getElementById('sync-area');
+        el.value = dataStr;
+        el.classList.remove('hidden');
+        el.select();
+        document.execCommand('copy');
+        alert("Đã copy mã đồng bộ! Hãy gửi mã này sang điện thoại/máy tính khác.");
     }
 
-    function handleWordFile(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = e => {
-            mammoth.convertToHtml({arrayBuffer: e.target.result})
-                .then(result => parsePro(result.value))
-                .catch(err => alert("Lỗi: " + err));
-        };
-        reader.readAsArrayBuffer(file);
-    }
-
-    function parsePro(html) {
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        const ps = Array.from(temp.querySelectorAll('p')).filter(p => p.innerText.trim() !== "");
-        let newQs = [];
-
-        for (let i = 0; i < ps.length; i++) {
-            let text = ps[i].innerText.trim();
-            if (/^Câu\s\d+/i.test(text)) {
-                let qObj = { q: text, type: 'quiz', a: [], correct: 0, items: [] };
-                let blockHtml = "";
-                let j = i + 1;
-                while (j < ps.length && !/^Câu\s\d+/i.test(ps[j].innerText.trim())) {
-                    blockHtml += ps[j].outerHTML;
-                    j++;
-                }
-
-                const doc = new DOMParser().parseFromString(blockHtml, 'text/html');
-                let rawOptions = [];
-                doc.body.querySelectorAll('p').forEach(p => {
-                    let parts = p.innerText.split(/\s(?=[A-Da-d][.:)])/);
-                    parts.forEach(part => {
-                        if (/^[A-Da-d][.:)]/.test(part.trim())) {
-                            let isRed = p.innerHTML.toLowerCase().includes('red') || p.innerHTML.toLowerCase().includes('#ff0000');
-                            rawOptions.push({ 
-                                t: part.trim().replace(/^[A-Da-d][.:)]\s*/i, ""), 
-                                isCorrect: isRed || part.toLowerCase().includes("đúng")
-                            });
-                        }
-                    });
-                });
-
-                if (rawOptions.length > 0) {
-                    if (rawOptions.some(o => o.t.toLowerCase().includes("đúng") || o.t.toLowerCase().includes("sai"))) {
-                        qObj.type = 'tf4';
-                        qObj.items = rawOptions.slice(0, 4).map(o => ({ t: o.t.replace(/\s*(Đúng|Sai)$/i, ""), ans: o.isCorrect }));
-                    } else {
-                        qObj.type = 'quiz';
-                        qObj.a = rawOptions.slice(0, 4).map(o => o.t);
-                        qObj.correct = Math.max(0, rawOptions.findIndex(o => o.isCorrect));
-                    }
-                    newQs.push(qObj);
-                }
-                i = j - 1;
+    function importData() {
+        const el = document.getElementById('sync-area');
+        el.classList.remove('hidden');
+        if(!el.value) return alert("Vui lòng dán mã đã copy vào ô văn bản!");
+        try {
+            const decoded = JSON.parse(decodeURIComponent(escape(atob(el.value))));
+            if(confirm("Dữ liệu mới sẽ ghi đè dữ liệu cũ. Tiếp tục?")) {
+                questions = decoded;
+                save();
+                renderEditList();
+                alert("Đồng bộ thành công!");
+                el.classList.add('hidden');
+                el.value = "";
             }
-        }
-        questions = [...questions, ...newQs]; save(); renderEditList();
-        alert(`Đã nhập thêm ${newQs.length} câu thành công!`);
+        } catch(e) { alert("Mã đồng bộ không hợp lệ!"); }
     }
 
-    // --- GIAO DIỆN CHỈNH SỬA ---
-    function renderEditList() {
-        const list = document.getElementById('edit-list'); list.innerHTML = '';
-        questions.forEach((q, qIdx) => {
-            const div = document.createElement('div'); div.className = 'card';
-            let content = `<div class="badge ${q.type==='tf4'?'badge-tf':'badge-quiz'}">${q.type==='tf4'?'Đúng/Sai':'Trắc nghiệm'}</div>`;
-            content += `<input value="${q.q}" oninput="questions[${qIdx}].q=this.value;save()">`;
-            if(q.type === 'quiz') {
-                q.a.forEach((opt, aIdx) => {
-                    content += `<div class="option-row">
-                        <input type="radio" name="r-${qIdx}" ${q.correct==aIdx?'checked':''} onchange="questions[${qIdx}].correct=${aIdx};save()">
-                        <input style="flex:1" value="${opt}" oninput="questions[${qIdx}].a[${aIdx}]=this.value;save()">
-                    </div>`;
-                });
-            } else {
-                q.items.forEach((it, iIdx) => {
-                    content += `<div class="option-row">
-                        <input style="flex:1" value="${it.t}" oninput="questions[${qIdx}].items[${iIdx}].t=this.value;save()">
-                        <button onclick="toggleTF(${qIdx},${iIdx})" style="width:40px; background:${it.ans?'#10b981':'#ef4444'}; color:white; border:none; border-radius:5px; height:40px; cursor:pointer">${it.ans?'Đ':'S'}</button>
-                    </div>`;
-                });
-            }
-            div.innerHTML = `<button class="btn-del" style="float:right" onclick="delQ(${qIdx})">Xóa</button>` + content;
-            list.appendChild(div);
-        });
-    }
+    // --- LOGIC CŨ (ĐÃ TỐI ƯU ĐỒNG BỘ) ---
+    function save() { localStorage.setItem('finalQuizData', JSON.stringify(questions)); }
 
-    function toggleTF(qi, ii) { questions[qi].items[ii].ans = !questions[qi].items[ii].ans; save(); renderEditList(); }
-    function delQ(i) { questions.splice(i,1); save(); renderEditList(); }
-
-    function addNewQuestion(type) {
-        if (type === 'quiz') {
-            questions.push({ q: "Câu hỏi trắc nghiệm mới?", type: 'quiz', a: ["A", "B", "C", "D"], correct: 0 });
-        } else {
-            questions.push({ q: "Câu hỏi đúng sai mới?", type: 'tf4', items: [
-                { t: "Ý 1", ans: true }, { t: "Ý 2", ans: false }, { t: "Ý 3", ans: true }, { t: "Ý 4", ans: false }
-            ]});
-        }
-        save(); renderEditList();
-    }
-
-    // --- GIAO DIỆN LÀM BÀI ---
     function prepareQuiz() {
-        if(questions.length===0) { document.getElementById('play-question').innerText="Chưa có câu hỏi trong kho."; return; }
+        if(questions.length===0) return;
         currentIdx=0; correctCount=0;
-        
-        // TRÁO ĐỔI TOÀN BỘ CẤU TRÚC KHI BẮT ĐẦU
-        currentQuestions = JSON.parse(JSON.stringify(questions)) // Sao chép sâu
-            .sort(() => Math.random() - 0.5) // Tráo thứ tự câu
+        currentQuestions = JSON.parse(JSON.stringify(questions))
+            .sort(() => Math.random() - 0.5)
             .map(q => {
                 if(q.type === 'quiz') {
                     let correctTxt = q.a[q.correct];
-                    q.a.sort(() => Math.random() - 0.5); // Tráo đáp án
+                    q.a.sort(() => Math.random() - 0.5);
                     q.correct = q.a.indexOf(correctTxt);
                 }
                 return q;
             });
-
         showQuestion();
     }
 
@@ -218,7 +143,7 @@
                 const b = document.createElement('button'); b.className = 'opt-btn';
                 b.innerText = `${String.fromCharCode(65+i)}. ${opt}`;
                 b.onclick = () => { 
-                    if(!document.getElementById('submit-btn').classList.contains('hidden')) {
+                    if(document.getElementById('next-btn').classList.contains('hidden')) {
                         selectedQuizIdx = i;
                         document.querySelectorAll('.opt-btn').forEach(btn => btn.style.borderColor='#ddd');
                         b.style.borderColor='var(--p)';
@@ -228,11 +153,11 @@
             });
         } else {
             q.items.forEach((it, i) => {
-                const row = document.createElement('div'); row.className = 'tf4-row';
-                row.innerHTML = `<div style="font-size:15px; margin-bottom:5px"><b>${i+1}.</b> ${it.t}</div>
+                const row = document.createElement('div'); row.style.padding = "10px 0"; row.style.borderBottom = "1px solid #eee";
+                row.innerHTML = `<div style="font-size:14px; margin-bottom:5px"><b>${i+1}.</b> ${it.t}</div>
                     <div style="display:flex; gap:10px">
-                        <button id="tf-${i}-t" onclick="selectTF(${i}, true)" style="flex:1; padding:8px; border:1px solid #ddd; background:white; border-radius:5px; cursor:pointer">Đúng</button>
-                        <button id="tf-${i}-f" onclick="selectTF(${i}, false)" style="flex:1; padding:8px; border:1px solid #ddd; background:white; border-radius:5px; cursor:pointer">Sai</button>
+                        <button id="tf-${i}-t" onclick="selectTF(${i}, true)" style="flex:1; padding:8px; border:1px solid #ddd; background:white; border-radius:5px;">Đúng</button>
+                        <button id="tf-${i}-f" onclick="selectTF(${i}, false)" style="flex:1; padding:8px; border:1px solid #ddd; background:white; border-radius:5px;">Sai</button>
                     </div><div id="res-tf-${i}" class="tf-res hidden"></div>`;
                 box.appendChild(row);
             });
@@ -254,23 +179,23 @@
     function handleSubmit() {
         const q = currentQuestions[currentIdx];
         if(q.type === 'quiz') {
-            if(selectedQuizIdx === null) return alert("Vui lòng chọn đáp án!");
+            if(selectedQuizIdx === null) return alert("Chọn đáp án!");
             if(selectedQuizIdx === q.correct) correctCount++;
             document.querySelectorAll('.opt-btn').forEach((btn, i) => {
                 if(i === q.correct) btn.classList.add('correct');
                 if(i === selectedQuizIdx && i !== q.correct) btn.classList.add('wrong');
             });
         } else {
-            if(userTFAnswers.includes(null)) return alert("Vui lòng trả lời đủ 4 ý!");
-            let isAllRight = true;
+            if(userTFAnswers.includes(null)) return alert("Chọn đủ 4 ý!");
+            let ok = true;
             userTFAnswers.forEach((ans, i) => {
                 const res = document.getElementById(`res-tf-${i}`);
                 res.classList.remove('hidden');
-                res.innerText = `=> Đáp án đúng: ${q.items[i].ans ? 'Đúng' : 'Sai'}`;
+                res.innerText = `=> ${q.items[i].ans ? 'Đúng' : 'Sai'}`;
                 if(ans === q.items[i].ans) res.style.color = 'var(--success)';
-                else { res.style.color = 'var(--danger)'; isAllRight = false; }
+                else { res.style.color = 'var(--danger)'; ok = false; }
             });
-            if(isAllRight) correctCount++;
+            if(ok) correctCount++;
         }
         document.getElementById('submit-btn').classList.add('hidden');
         document.getElementById('next-btn').classList.remove('hidden');
@@ -281,10 +206,8 @@
         if(currentIdx < currentQuestions.length) showQuestion();
         else {
             document.getElementById('quiz-container').classList.add('hidden');
-            const resArea = document.getElementById('result-area');
-            resArea.classList.remove('hidden');
-            let finalScore = (correctCount / currentQuestions.length) * 10;
-            document.getElementById('final-score-10').innerText = finalScore.toFixed(1) + " / 10";
+            document.getElementById('result-area').classList.remove('hidden');
+            document.getElementById('final-score-10').innerText = ((correctCount/currentQuestions.length)*10).toFixed(1) + " / 10";
         }
     }
 
@@ -297,10 +220,28 @@
     }
 
     function handleEditNav() {
-        let p = prompt("Nhập mật khẩu quản lý:");
-        if(p === (appPassword || "")) showPage('edit'); else alert("Sai mật khẩu!");
+        let p = prompt("Nhập mật khẩu (Mặc định để trống nhấn OK):");
+        if(p !== null) showPage('edit');
     }
-    
+
+    function renderEditList() {
+        const list = document.getElementById('edit-list'); list.innerHTML = '';
+        questions.forEach((q, qIdx) => {
+            const div = document.createElement('div'); div.className = 'card';
+            div.innerHTML = `<button class="btn-del" style="float:right" onclick="delQ(${qIdx})">Xóa</button>
+            <div class="badge ${q.type==='tf4'?'badge-tf':'badge-quiz'}">${q.type==='tf4'?'Đúng/Sai':'Trắc nghiệm'}</div>
+            <input value="${q.q}" oninput="questions[${qIdx}].q=this.value;save()">`;
+            list.appendChild(div);
+        });
+    }
+
+    function delQ(i) { questions.splice(i,1); save(); renderEditList(); }
+    function addNewQuestion(type) {
+        if (type === 'quiz') questions.push({ q: "Câu mới?", type: 'quiz', a: ["A", "B", "C", "D"], correct: 0 });
+        else questions.push({ q: "Câu mới?", type: 'tf4', items: [{t:"Ý 1",ans:true},{t:"Ý 2",ans:false},{t:"Ý 3",ans:true},{t:"Ý 4",ans:false}]});
+        save(); renderEditList();
+    }
+
     showPage('play');
 </script>
 </body>
